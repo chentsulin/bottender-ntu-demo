@@ -1,11 +1,15 @@
-const { ConsoleBot } = require('bottender');
+const { ConsoleBot, MessengerBot } = require('bottender');
+const { createServer } = require('bottender/express');
 
 const coinmarketcap = require('./coinmarketcap');
 const { random } = require('./utils');
+const config = require('./bottender.config');
 
-const bot = new ConsoleBot();
+const bot = process.env.USE_CONSOLE
+  ? new ConsoleBot()
+  : new MessengerBot(config.messenger);
 
-bot.onEvent(async context => {
+const handler = async context => {
   if (context.event.text === '講笑話') {
     await context.sendText(
       random([
@@ -23,6 +27,16 @@ bot.onEvent(async context => {
       }，24 小時內變動 ${btc.percent_change_24h}％`
     );
   }
-});
+};
 
-bot.createRuntime();
+bot.onEvent(handler);
+
+if (process.env.USE_CONSOLE) {
+  bot.createRuntime();
+} else {
+  const server = createServer(bot);
+
+  server.listen(5000, () => {
+    console.log('server is running on 5000 port...');
+  });
+}
