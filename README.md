@@ -38,6 +38,14 @@ The config file for the bot.\
 We suggests you to put all platform configs into this file and use it as a parameter
 of createServer.
 
+### .env
+
+```
+cp .env.sample .env
+```
+
+And put your variables into `.env`.
+
 ## Available Scripts
 
 There are two default scripts you can run:
